@@ -1,10 +1,10 @@
 # App Lock for Despia V3
 
-Source preview for Despia V3. This snapshot requires the runtime update currently awaiting release and an approved extension-enabled native build. Uploading these files does not change an installed app.
+Source preview for Despia V3. The runtime update and automatic discovery rollout are awaiting release. Rebuild and install the native app to include these files; uploading them does not change an installed app.
 
 A ready-made extension for focus, prayer and screen-time apps. Store named groups, select apps and websites, activate several groups at once, and schedule blocks with one JavaScript API.
 
-This experimental extension is for the Despia V3 runtime. It requires the runtime update currently awaiting release and an approved extension-enabled native build. First-party V4 support comes through the new package registry. This repository does not promise a V4 port.
+This experimental extension is for the Despia V3 runtime. It requires the runtime update and automatic discovery rollout currently awaiting release, plus a native rebuild. First-party V4 support comes through the new package registry. This repository does not promise a V4 port.
 
 ## Platform behavior
 
@@ -34,8 +34,10 @@ Native Screen Time shielding and Android Accessibility/VPN enforcement are not y
    { "extensions": ["applock"] }
    ```
 
-3. Rebuild with an approved Despia V3 extension build. Adding files to a deployed website does not add native code to an existing binary.
+3. Rebuild and install the native app with this extension. Adding files to a deployed website does not add native code to an existing binary.
 4. Install the JavaScript SDK with `npm install despia-native` and import `despia` in your app's client code.
+
+Signed build verification binds source hashes, dependency pins, app identity and final artifacts. It is separate from human code review and does not require a per-app enrollment switch.
 
 On iOS, the Apple Developer Account Holder must obtain Family Controls distribution approval for the app and all three generated extension bundle IDs: `<your bundle id>.NXLockMonitor`, `<your bundle id>.NXLockShield` and `<your bundle id>.NXLockAction`. Provision the generated `applock` App Group for all four bundles. The manifest requests these capabilities; it cannot grant signing rights. The extension targets iOS 16.6 and later.
 
@@ -51,7 +53,7 @@ Install the published SDK in your web app:
 npm install despia-native
 ```
 
-Import `despia` directly from `despia-native`. The examples use SDK 1.0.28. Run native calls from browser event handlers or mounted client hooks; importing the SDK during server rendering is safe. The installed Despia V3 app must include the approved extension.
+Import `despia` directly from `despia-native`. The examples use SDK 1.0.28. Run native calls from browser event handlers or mounted client hooks; importing the SDK during server rendering is safe. The installed Despia V3 app must include the compiled extension.
 
 Pass the route's exact output variable as the second argument. The SDK resolves an object whose matching property contains the full native envelope: `ok`, `code`, `error` and `data`, with runtime metadata. A native `ok: false` answer does not reject the SDK promise. Check `ok` before reading `data`. A single watched value becomes `undefined` after 30 seconds without an answer. Await calls using the same output variable sequentially.
 
