@@ -23,7 +23,7 @@ Android foreground shields do not suspend packages or block their background wor
 
 The Android DNS filter covers queries sent to its local UDP resolver. It does not block HTTPS paths, hard-coded IP addresses, cached DNS, DNS over HTTPS, DNS over TLS or DNS over TCP used by another app. It can replace an existing VPN only through Android's normal consent flow. It does not route other app traffic and does not support always-on lockdown. Allowed queries go over TLS to the configured upstream. The default is Google Public DNS, `8.8.8.8`, with TLS name `dns.google` on port 853.
 
-Native Screen Time shielding and Android Accessibility/VPN enforcement are not yet tested on devices.
+Android API 37 emulator checks covered named groups, DNS blocking, and VPN teardown when blocking stops. Android Accessibility shielding and iOS Screen Time shielding still need device testing.
 
 ## Install
 
