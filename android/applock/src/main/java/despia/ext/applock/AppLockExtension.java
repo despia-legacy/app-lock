@@ -65,7 +65,7 @@ public final class AppLockExtension implements NativeExtension {
                 case "android_accessibility": if (Boolean.TRUE.equals(call.params.get("request"))) showAccessibilityDisclosure(); reply.reply(ExtResult.ok(authorization())); return;
                 case "android_vpn":
                     String action = (String)call.params.getOrDefault("action", "status");
-                    if ("stop".equals(action)) { cancelVpnRequest(); context.app().stopService(new Intent(context.app(), LockDnsService.class)); }
+                    if ("stop".equals(action)) { cancelVpnRequest(); LockDnsService.stop(context.app()); }
                     else if ("start".equals(action)) { configureVpn(store, call.params.get("data")); requestVpn(); }
                     else if (!"status".equals(action)) throw new IllegalArgumentException("action must be status, start or stop");
                     reply.reply(ExtResult.ok(LockDnsService.status().put("pending", vpnRequests.isPending()).put("config", store.read().optJSONObject("android_vpn")))); return;
@@ -212,7 +212,7 @@ public final class AppLockExtension implements NativeExtension {
             for (int index = 0; index < schedules.length(); index++) schedules.getJSONObject(index).put("enabled", false);
             LockState.record(state, "released_all", null, null); return null;
         });
-        context.stopService(new Intent(context, LockDnsService.class)); LockAccessibilityService.refreshCurrent();
+        LockDnsService.stop(context); LockAccessibilityService.refreshCurrent();
         emitCurrent("changed", new JSONObject().put("kind", "released_all"));
     }
     static void emitCurrent(String event, JSONObject payload) { AppLockExtension extension = current.get(); if (extension != null) extension.context.emit(event, payload); }

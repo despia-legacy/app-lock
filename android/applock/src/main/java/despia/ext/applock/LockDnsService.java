@@ -34,6 +34,16 @@ public final class LockDnsService extends VpnService {
         if (session != null) status.put("forwarded", session.forwarded).put("blocked", session.blocked).put("failed", session.failed).put("rejected", session.rejected).put("last_error", session.lastError == null ? JSONObject.NULL : session.lastError);
         return status;
     }
+    static void stop(Context context) {
+        LockDnsService service = active;
+        if (service != null) {
+            synchronized (service.sessions) {
+                // Android can keep a VPN service bound after stopService clears its start request.
+                if (service.session != null) service.close(service.session);
+            }
+        }
+        context.stopService(new Intent(context, LockDnsService.class));
+    }
     @Override public int onStartCommand(Intent intent, int flags, int startId) {
         synchronized (sessions) {
             if (intent != null && STOP.equals(intent.getAction())) {
