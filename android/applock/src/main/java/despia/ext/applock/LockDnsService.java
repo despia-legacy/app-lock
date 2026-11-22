@@ -108,6 +108,7 @@ public final class LockDnsService extends VpnService {
         Socket socket = new Socket();
         synchronized (sessions) { if (!owner.running || session != owner) { socket.close(); throw new IOException("DNS session ended"); } owner.upstream = socket; }
         try {
+            socket.bind(null);
             if (!protect(socket)) throw new IOException("DNS socket could not be protected from the VPN");
             socket.connect(new InetSocketAddress(address, port), 5000); socket.setSoTimeout(5000);
             try (SSLSocket tls = (SSLSocket)((SSLSocketFactory)SSLSocketFactory.getDefault()).createSocket(socket, hostname, port, true)) {
