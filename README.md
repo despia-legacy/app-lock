@@ -41,6 +41,18 @@ Signed build verification binds source hashes, dependency pins, app identity and
 
 On iOS, the Apple Developer Account Holder must obtain Family Controls distribution approval for the app and all three generated extension bundle IDs: `<your bundle id>.NXLockMonitor`, `<your bundle id>.NXLockShield` and `<your bundle id>.NXLockAction`. Provision the generated `applock` App Group for all four bundles. The manifest requests these capabilities; it cannot grant signing rights. The extension targets iOS 16.6 and later.
 
+### Family Controls distribution approval
+
+Check this before your first iOS distribution build. Apple grants the Family Controls entitlement (`com.apple.developer.family-controls`) for distribution only on request, and per bundle ID. App Lock declares it on four bundles: the app, `<your bundle id>.NXLockMonitor`, `<your bundle id>.NXLockShield` and `<your bundle id>.NXLockAction`.
+
+1. The Account Holder submits the [Family Controls distribution request](https://developer.apple.com/contact/request/family-controls-distribution) for the app, and the same request for each of the three extensions.
+2. When Apple approves a request, Certificates, Identifiers & Profiles shows Family Controls as Assigned for that App ID. Open its info button and check that Provisioning Support lists every distribution method you use.
+3. Create or regenerate the distribution provisioning profiles of all four bundle IDs, so each carries Family Controls and the App Group `group.<your bundle id>.nx.applock`.
+
+Until all four are approved, a distribution build stops at signing: `NX-S011` when a profile does not grant the entitlement, `NX-S010` when a bundle has no profile. A failed authorization request reports its reason in the `authorization` event as `error_code`: `unauthorized`, `restricted`, `unavailable`, `invalid_account_type`, `invalid_argument`, `authorization_conflict`, `authorization_canceled`, `network_error` or `authentication_method_unavailable` (Apple's `FamilyControlsError` cases).
+
+Source: Apple, [Requesting the Family Controls entitlement](https://developer.apple.com/documentation/familycontrols/requesting-the-family-controls-entitlement), read 24 November 2026 (page updated 19 November 2026).
+
 On Android, the module declares its own service permissions and manifest entries. An app using Accessibility for self-control needs Google Play disclosure, affirmative consent and the applicable Play declarations. Do not mark it as an accessibility tool. VPN foreground service eligibility and the Play listing also need review. This repository does not claim store approval.
 
 See the [V3 extension guide](https://setup.despia.com/experiments/v3-extensions) and [extension skill](https://github.com/despia-legacy/extension-skill).
